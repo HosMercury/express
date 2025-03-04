@@ -1,5 +1,6 @@
 import { Router, Request, Response } from "express";
 import { z } from "zod";
+import { pool } from "../pool";
 
 const router = Router();
 
@@ -25,19 +26,16 @@ const guardSchema = z.object({
     .max(50, "Experience must be realistic (max 50 years)"),
 });
 
-router.post("/add", (req: Request, res: Response) => {
-  // Extract form data
+router.post("/add", async (req: Request, res: Response) => {
   const formData = {
     name: req.body.name,
     title: req.body.title,
-    experience: Number(req.body.experience), // Ensure it's a number
+    experience: Number(req.body.experience),
   };
 
-  // Validate using Zod
   const result = guardSchema.safeParse(formData);
 
   if (!result.success) {
-    // Convert Zod errors to a usable format
     const errors = result.error.format();
     return res.render("pages/guard-add", {
       errors,
@@ -46,11 +44,18 @@ router.post("/add", (req: Request, res: Response) => {
     });
   }
 
-  // If validation passes, proceed with saving (placeholder)
-  console.log("✅ Guard Data Validated:", result.data);
+  try {
+    await pool.query(
+      "INSERT INTO guards (name, title, experience) VALUES ($1, $2, $3)",
+      [formData.name, formData.title, formData.experience]
+    );
 
-  // TODO: Save to database (replace with actual DB logic)
-  return res.redirect("/guards");
+    console.log("✅ Guard added successfully!");
+    return res.redirect("/guards");
+  } catch (error) {
+    console.error("❌ Database Insert Error:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 export default router;

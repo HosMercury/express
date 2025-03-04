@@ -1,7 +1,17 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const zod_1 = require("zod");
+const pool_1 = require("../pool");
 const router = (0, express_1.Router)();
 router.get("/", (req, res) => {
     res.render("pages/guards", { errors: {}, formData: {}, title: "Guards" });
@@ -22,17 +32,14 @@ const guardSchema = zod_1.z.object({
         .min(0, "Experience must be at least 0 years")
         .max(50, "Experience must be realistic (max 50 years)"),
 });
-router.post("/add", (req, res) => {
-    // Extract form data
+router.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const formData = {
         name: req.body.name,
         title: req.body.title,
-        experience: Number(req.body.experience), // Ensure it's a number
+        experience: Number(req.body.experience),
     };
-    // Validate using Zod
     const result = guardSchema.safeParse(formData);
     if (!result.success) {
-        // Convert Zod errors to a usable format
         const errors = result.error.format();
         return res.render("pages/guard-add", {
             errors,
@@ -40,9 +47,14 @@ router.post("/add", (req, res) => {
             title: "Add Guard",
         });
     }
-    // If validation passes, proceed with saving (placeholder)
-    console.log("✅ Guard Data Validated:", result.data);
-    // TODO: Save to database (replace with actual DB logic)
-    return res.redirect("/guards");
-});
+    try {
+        yield pool_1.pool.query("INSERT INTO guards (name, title, experience) VALUES ($1, $2, $3)", [formData.name, formData.title, formData.experience]);
+        console.log("✅ Guard added successfully!");
+        return res.redirect("/guards");
+    }
+    catch (error) {
+        console.error("❌ Database Insert Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
+}));
 exports.default = router;
