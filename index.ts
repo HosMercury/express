@@ -5,6 +5,7 @@ import path from "path";
 import { pool } from "./src/pool"; // Import the database connection pool
 import authRouter from "./src/routes/auth";
 import pgSession from "connect-pg-simple";
+import requireAuth from "./src/middlewares/auth";
 
 dotenv.config();
 
@@ -58,7 +59,7 @@ async function checkDatabaseConnection() {
 }
 
 // Example Route: Render an EJS template
-app.get("/", (req: Request, res: Response) => {
+app.get("/", requireAuth, (req: Request, res: Response) => {
   res.render("index", {
     title: "Home Page",
     message: "Welcome to Express with EJS!",

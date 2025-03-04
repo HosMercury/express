@@ -16,6 +16,7 @@ const express_1 = require("express");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const pool_1 = require("../pool");
 const zod_1 = require("zod");
+const auth_1 = __importDefault(require("../middlewares/auth"));
 const router = (0, express_1.Router)();
 // Validation schema using Zod
 const signInSchema = zod_1.z.object({
@@ -74,5 +75,14 @@ router.post("/signin", (req, res) => __awaiter(void 0, void 0, void 0, function*
 // Render the sign-in page with empty errors initially
 router.get("/signin", (req, res) => {
     res.render("pages/signin", { errors: {}, formData: {} });
+});
+router.post("/signout", auth_1.default, (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error("Error destroying session:", err);
+            return res.status(500).send("Failed to sign out");
+        }
+        res.redirect("/auth/signin"); // Redirect to login page after destroying session
+    });
 });
 exports.default = router;

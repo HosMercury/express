@@ -19,6 +19,7 @@ const path_1 = __importDefault(require("path"));
 const pool_1 = require("./src/pool"); // Import the database connection pool
 const auth_1 = __importDefault(require("./src/routes/auth"));
 const connect_pg_simple_1 = __importDefault(require("connect-pg-simple"));
+const auth_2 = __importDefault(require("./src/middlewares/auth"));
 dotenv_1.default.config();
 const PORT = 8000;
 const app = (0, express_1.default)();
@@ -64,7 +65,7 @@ function checkDatabaseConnection() {
     });
 }
 // Example Route: Render an EJS template
-app.get("/", (req, res) => {
+app.get("/", auth_2.default, (req, res) => {
     res.render("index", {
         title: "Home Page",
         message: "Welcome to Express with EJS!",

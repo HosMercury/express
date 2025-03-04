@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { pool } from "../pool";
 import { z } from "zod";
+import requireAuth from "../middlewares/auth";
 
 const router = Router();
 
@@ -82,6 +83,16 @@ router.post("/signin", async (req: Request, res: Response) => {
 // Render the sign-in page with empty errors initially
 router.get("/signin", (req: Request, res: Response) => {
   res.render("pages/signin", { errors: {}, formData: {} });
+});
+
+router.post("/signout", requireAuth, (req: Request, res: Response) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+      return res.status(500).send("Failed to sign out");
+    }
+    res.redirect("/auth/signin"); // Redirect to login page after destroying session
+  });
 });
 
 export default router;
