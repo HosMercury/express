@@ -1,14 +1,16 @@
 import express, { Express, Request, Response } from "express";
-import cookieSession from "cookie-session";
+import session from "express-session";
 import dotenv from "dotenv";
 import path from "path";
-import db from "./src/db"; // Import the database connection
+import { pool } from "./src/pool"; // Import the database connection pool
 import authRouter from "./src/routes/auth";
+import pgSession from "connect-pg-simple";
 
 dotenv.config();
 
 const PORT = 8000;
 const app: Express = express();
+const PgStore = pgSession(session);
 
 // Correctly set views directory
 const viewsPath = path.join(__dirname, "../views");
@@ -16,14 +18,26 @@ const viewsPath = path.join(__dirname, "../views");
 app.set("view engine", "ejs");
 app.set("views", viewsPath);
 
-// Middleware: Cookie Session
+// Middleware: Body Parsing
+app.use(express.json()); // Parses JSON request bodies
+app.use(express.urlencoded({ extended: true })); // Parses URL-encoded request bodies
+
+// Middleware: Express Session with PostgreSQL Store
 app.use(
-  cookieSession({
-    name: "session",
+  session({
+    store: new PgStore({
+      pool, // Use your database connection pool
+      tableName: "sessions", // Custom table name for storing sessions
+    }),
     secret: process.env.SESSION_SECRET as string,
-    maxAge: 24 * 60 * 60 * 1000, // 1 day
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    resave: false, // Avoids unnecessary session updates
+    saveUninitialized: false, // Don't save empty sessions
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      httpOnly: true, // Prevent client-side JavaScript access
+      secure: process.env.NODE_ENV === "production", // Secure cookies in production
+      sameSite: "strict", // Protect against CSRF attacks
+    },
   })
 );
 
@@ -33,7 +47,9 @@ app.use(express.static(path.join(__dirname, "public")));
 // Check database connection
 async function checkDatabaseConnection() {
   try {
-    await db.one("SELECT 1");
+    const client = await pool.connect(); // Get a connection from the pool
+    await client.query("SELECT 1"); // Run a test query
+    client.release(); // Release the connection back to the pool
     console.log("✅ Database connection successful!");
   } catch (error) {
     console.error("❌ Database connection failed:", error);
