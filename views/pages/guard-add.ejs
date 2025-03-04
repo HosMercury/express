@@ -1,0 +1,69 @@
+<%- include('../partials/user-header') %>
+<h2 class="text-2xl my-2">Guard data</h2>
+<form action="/guards/add" method="post">
+  <div class="flex gap-x-4 items-center">
+    <label for="name" class="block text-sm font-medium text-gray-900 w-40"
+      >Guard Name</label
+    >
+    <div class="mt-2">
+      <input
+        type="text"
+        name="name"
+        id="name"
+        value="<%= formData.name || '' %>"
+        required
+        class="block border w-96 rounded-md bg-white px-3 py-2 text-base text-gray-900 placeholder-gray-400 border <% if (errors.name) { %> border-red-500 <% } else { %> border-gray-300 <% } %>"
+      />
+      <% if (errors.name) { %>
+      <p class="mt-1 text-sm text-red-600"><%= errors.name._errors[0] %></p>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="flex gap-x-4 items-center">
+    <label for="name" class="block text-sm font-medium text-gray-900 w-40"
+      >Guard Title</label
+    >
+    <div class="mt-2">
+      <input
+        type="text"
+        name="title"
+        id="title"
+        value="<%= formData.title || '' %>"
+        required
+        class="block border w-96 rounded-md bg-white px-3 py-2 text-base text-gray-900 placeholder-gray-400 border <% if (errors.title) { %> border-red-500 <% } else { %> border-gray-300 <% } %>"
+      />
+      <% if (errors.title) { %>
+      <p class="mt-1 text-sm text-red-600"><%= errors.title._errors[0] %></p>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="flex gap-x-4 items-center">
+    <label for="name" class="block text-sm font-medium text-gray-900 w-40"
+      >Years of experience</label
+    >
+    <div class="mt-2">
+      <input
+        type="number"
+        name="experience"
+        id="experience"
+        value="<%= formData.experience || '' %>"
+        required
+        class="block border w-96 rounded-md bg-white px-3 py-2 text-base text-gray-900 placeholder-gray-400 border <% if (errors.experience) { %> border-red-500 <% } else { %> border-gray-300 <% } %>"
+      />
+      <% if (errors.experience) { %>
+      <p class="mt-1 text-sm text-red-600">
+        <%= errors.experience._errors[0] %>
+      </p>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="flex justify-center my-3">
+    <button class="w-40 bg-gray-800 text-white p-2 rounded" type="submit">
+      Save
+    </button>
+  </div>
+</form>
+<%- include('../partials/user-footer') %>

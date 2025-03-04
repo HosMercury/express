@@ -18,6 +18,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const path_1 = __importDefault(require("path"));
 const pool_1 = require("./src/pool"); // Import the database connection pool
 const auth_1 = __importDefault(require("./src/routes/auth"));
+const guards_1 = __importDefault(require("./src/routes/guards"));
 const connect_pg_simple_1 = __importDefault(require("connect-pg-simple"));
 const auth_2 = __importDefault(require("./src/middlewares/auth"));
 dotenv_1.default.config();
@@ -48,7 +49,7 @@ app.use((0, express_session_1.default)({
     },
 }));
 // Serve static files (CSS, JS, images)
-app.use(express_1.default.static(path_1.default.join(__dirname, "public")));
+app.use(express_1.default.static("public"));
 // Check database connection
 function checkDatabaseConnection() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -72,6 +73,7 @@ app.get("/", auth_2.default, (req, res) => {
     });
 });
 app.use("/auth", auth_1.default);
+app.use("/guards", auth_2.default, guards_1.default);
 // Start the server after checking the database connection
 checkDatabaseConnection().then(() => {
     app.listen(PORT, () => {

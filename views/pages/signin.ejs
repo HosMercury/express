@@ -4,18 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Company | Sign In</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/style.css" />
   </head>
   <body class="h-full bg-gray-50 flex items-center justify-center min-h-screen">
-    <div class="relative flex flex-col justify-center px-6 py-12 lg:px-8">
-      <!-- Gradient Background -->
-      <div
-        class="absolute inset-0 -z-10 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 opacity-30 blur-3xl w-[500px] h-[500px] rounded-full m-auto"
-      ></div>
+    <!-- Full-Screen Gradient Background -->
+    <div
+      class="absolute inset-0 -z-10 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 opacity-40 blur-3xl w-full h-full"
+    ></div>
 
+    <div class="relative flex flex-col justify-center px-6 py-12 lg:px-8">
       <!-- Card Box -->
       <div
-        class="relative border p-6 rounded-xl bg-white shadow-xl w-fit min-w-[380px] z-10"
+        class="relative border p-6 rounded-xl bg-white shadow-xl w-fit min-w-96 z-10"
       >
         <div class="sm:mx-auto sm:w-full sm:max-w-sm">
           <p class="w-full text-center">-=|=-</p>
@@ -26,7 +27,7 @@
           </h2>
         </div>
 
-        <!-- Display general errors (authentication failures, server errors) -->
+        <!-- Display general errors -->
         <% if (errors._error) { %>
         <div class="mt-4 p-3 text-sm text-red-600 bg-red-100 rounded-md">
           <%= errors._error %>
@@ -47,7 +48,7 @@
                   autocomplete="email"
                   value="<%= formData.email || '' %>"
                   required
-                  class="block border w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 placeholder-gray-400 border <% if (errors.email) { %> border-red-500 <% } else { %> border-gray-300 <% } %>"
+                  class="block border w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 placeholder-gray-400 <% if (errors.email) { %> border-red-500 <% } else { %> border-gray-300 <% } %>"
                 />
                 <% if (errors.email) { %>
                 <p class="mt-1 text-sm text-red-600">
@@ -70,7 +71,7 @@
                   id="password"
                   autocomplete="current-password"
                   required
-                  class="block w-full border rounded-md bg-white px-3 py-2 text-base text-gray-900 placeholder-gray-400 border <% if (errors.password) { %> border-red-500 <% } else { %> border-gray-300 <% } %>"
+                  class="block w-full border rounded-md bg-white px-3 py-2 text-base text-gray-900 placeholder-gray-400 <% if (errors.password) { %> border-red-500 <% } else { %> border-gray-300 <% } %>"
                 />
                 <% if (errors.password) { %>
                 <p class="mt-1 text-sm text-red-600">
@@ -92,5 +93,6 @@
         </div>
       </div>
     </div>
+    <script src="https://cdn.tailwindcss.com"></script>
   </body>
 </html>

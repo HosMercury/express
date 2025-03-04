@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { pool } from "./src/pool"; // Import the database connection pool
 import authRouter from "./src/routes/auth";
+import guardsRouter from "./src/routes/guards";
 import pgSession from "connect-pg-simple";
 import requireAuth from "./src/middlewares/auth";
 
@@ -43,7 +44,7 @@ app.use(
 );
 
 // Serve static files (CSS, JS, images)
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static("public"));
 
 // Check database connection
 async function checkDatabaseConnection() {
@@ -67,6 +68,7 @@ app.get("/", requireAuth, (req: Request, res: Response) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/guards", requireAuth, guardsRouter);
 
 // Start the server after checking the database connection
 checkDatabaseConnection().then(() => {
