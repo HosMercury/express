@@ -5,6 +5,7 @@ import path from "path";
 import { pool } from "./src/pool"; // Import the database connection pool
 import authRouter from "./src/routes/auth";
 import guardsRouter from "./src/routes/guards";
+import apiRouter from "./src/routes/api";
 import pgSession from "connect-pg-simple";
 import requireAuth from "./src/middlewares/auth";
 
@@ -68,6 +69,7 @@ app.get("/", requireAuth, (req: Request, res: Response) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/api", requireAuth, apiRouter);
 app.use("/guards", requireAuth, guardsRouter);
 
 // Start the server after checking the database connection

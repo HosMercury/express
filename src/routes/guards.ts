@@ -4,8 +4,9 @@ import { pool } from "../pool";
 
 const router = Router();
 
+// get all guards through table ==>
 router.get("/", (req: Request, res: Response) => {
-  res.render("pages/guards", { errors: {}, formData: {}, title: "Guards" });
+  res.render("pages/guards", { title: "Guards" });
 });
 
 router.get("/add", (req: Request, res: Response) => {

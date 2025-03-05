@@ -13,8 +13,9 @@ const express_1 = require("express");
 const zod_1 = require("zod");
 const pool_1 = require("../pool");
 const router = (0, express_1.Router)();
+// get all guards through table ==>
 router.get("/", (req, res) => {
-    res.render("pages/guards", { errors: {}, formData: {}, title: "Guards" });
+    res.render("pages/guards", { title: "Guards" });
 });
 router.get("/add", (req, res) => {
     res.render("pages/guard-add", {
