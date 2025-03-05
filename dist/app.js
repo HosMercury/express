@@ -19,7 +19,7 @@ const path_1 = __importDefault(require("path"));
 const pool_1 = require("./src/pool"); // Import the database connection pool
 const auth_1 = __importDefault(require("./src/routes/auth"));
 const guards_1 = __importDefault(require("./src/routes/guards"));
-const api_1 = __importDefault(require("./src/routes/api"));
+const guards_2 = __importDefault(require("./src/routes/api/guards"));
 const connect_pg_simple_1 = __importDefault(require("connect-pg-simple"));
 const auth_2 = __importDefault(require("./src/middlewares/auth"));
 dotenv_1.default.config();
@@ -74,7 +74,7 @@ app.get("/", auth_2.default, (req, res) => {
     });
 });
 app.use("/auth", auth_1.default);
-app.use("/api", auth_2.default, api_1.default);
+app.use("/api/guards", auth_2.default, guards_2.default);
 app.use("/guards", auth_2.default, guards_1.default);
 // Start the server after checking the database connection
 checkDatabaseConnection().then(() => {

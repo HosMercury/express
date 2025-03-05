@@ -1,0 +1,78 @@
+<%- include('../partials/user-header') %>
+
+<h2 class="text-2xl my-2">Edit Guard</h2>
+
+<form action="/guards/<%= guard.id %>?_method=PUT" method="post">
+  <div class="flex gap-x-4 items-center">
+    <label for="name" class="block text-sm font-medium text-gray-900 w-40">
+      Guard Name
+    </label>
+    <div class="mt-2">
+      <input
+        type="text"
+        name="name"
+        id="name"
+        value="<%= formData.name || guard.name %>"
+        required
+        class="block border w-96 rounded-md bg-white px-3 py-2 text-base text-gray-900 placeholder-gray-400 border <% if (errors.name) { %> border-red-500 <% } else { %> border-gray-300 <% } %>"
+      />
+      <% if (errors.name) { %>
+      <p class="mt-1 text-sm text-red-600"><%= errors.name._errors[0] %></p>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="flex gap-x-4 items-center">
+    <label for="title" class="block text-sm font-medium text-gray-900 w-40">
+      Guard Title
+    </label>
+    <div class="mt-2">
+      <input
+        type="text"
+        name="title"
+        id="title"
+        value="<%= formData.title || guard.title %>"
+        required
+        class="block border w-96 rounded-md bg-white px-3 py-2 text-base text-gray-900 placeholder-gray-400 border <% if (errors.title) { %> border-red-500 <% } else { %> border-gray-300 <% } %>"
+      />
+      <% if (errors.title) { %>
+      <p class="mt-1 text-sm text-red-600"><%= errors.title._errors[0] %></p>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="flex gap-x-4 items-center">
+    <label
+      for="experience"
+      class="block text-sm font-medium text-gray-900 w-40"
+    >
+      Years of Experience
+    </label>
+    <div class="mt-2">
+      <input
+        type="number"
+        name="experience"
+        id="experience"
+        value="<%= formData.experience || guard.experience %>"
+        required
+        class="block border w-96 rounded-md bg-white px-3 py-2 text-base text-gray-900 placeholder-gray-400 border <% if (errors.experience) { %> border-red-500 <% } else { %> border-gray-300 <% } %>"
+      />
+      <% if (errors.experience) { %>
+      <p class="mt-1 text-sm text-red-600">
+        <%= errors.experience._errors[0] %>
+      </p>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="flex justify-center my-3">
+    <button
+      class="w-40 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded"
+      type="submit"
+    >
+      Update
+    </button>
+  </div>
+</form>
+
+<%- include('../partials/user-footer') %>

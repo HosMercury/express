@@ -1,0 +1,74 @@
+<%- include('../partials/user-header') %>
+
+<div class="flex justify-end items-center p-4">
+  <a href="/guards/add" class="bg-gray-800 text-white rounded px-4 py-2">
+    Add Guard
+  </a>
+</div>
+
+<div class="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+  <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">
+    Guard Details
+  </h1>
+
+  <table class="w-full border border-gray-300">
+    <tbody>
+      <tr class="bg-gray-100">
+        <td class="px-4 py-3 font-semibold border border-gray-300">Name</td>
+        <td class="px-4 py-3 border border-gray-300"><%= guard.name %></td>
+      </tr>
+      <tr>
+        <td class="px-4 py-3 font-semibold border border-gray-300">Title</td>
+        <td class="px-4 py-3 border border-gray-300"><%= guard.title %></td>
+      </tr>
+      <tr class="bg-gray-100">
+        <td class="px-4 py-3 font-semibold border border-gray-300">
+          Experience
+        </td>
+        <td class="px-4 py-3 border border-gray-300">
+          <%= guard.experience %> years
+        </td>
+      </tr>
+      <tr>
+        <td class="px-4 py-3 font-semibold border border-gray-300">
+          Created At
+        </td>
+        <td class="px-4 py-3 border border-gray-300">
+          <span class="date" data-date="<%= guard.created_at %>"></span>
+        </td>
+      </tr>
+      <tr class="bg-gray-100">
+        <td class="px-4 py-3 font-semibold border border-gray-300">
+          Updated At
+        </td>
+        <td class="px-4 py-3 border border-gray-300">
+          <span class="date" data-date="<%= guard.updated_at %>"></span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Action Buttons -->
+  <div class="flex justify-between mt-6">
+    <a
+      href="/guards/<%= guard.id %>/edit"
+      class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded"
+    >
+      Edit
+    </a>
+    <form
+      action="/guards/<%= guard.id %>?_method=DELETE"
+      method="POST"
+      onsubmit="return confirm('Are you sure you want to delete this guard?');"
+    >
+      <button
+        type="submit"
+        class="bg-red-600 hover:bg-red-700 text-white font-semibold px-5 py-2 rounded"
+      >
+        Delete
+      </button>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/user-footer') %>

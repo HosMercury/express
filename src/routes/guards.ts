@@ -6,7 +6,33 @@ const router = Router();
 
 // get all guards through table ==>
 router.get("/", (req: Request, res: Response) => {
-  res.render("pages/guards", { title: "Guards" });
+  res.render("pages/guard-index", { title: "Guards" });
+});
+
+router.get("/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    // Query to fetch the guard by ID
+    const result = await pool.query("SELECT * FROM guards WHERE id = $1", [id]);
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .render("pages/404", { message: "Guard not found" });
+    }
+
+    const guard = result.rows[0];
+
+    // Render the view and pass the guard data
+    res.render("pages/guard-show", {
+      title: `Guard: ${guard.name}`,
+      guard,
+    });
+  } catch (error) {
+    console.error("🔥 Error fetching guard:", error);
+    res.status(500).render("pages/error", { message: "Internal Server Error" });
+  }
 });
 
 router.get("/add", (req: Request, res: Response) => {
@@ -14,6 +40,14 @@ router.get("/add", (req: Request, res: Response) => {
     errors: {},
     formData: {},
     title: "Add Guard",
+  });
+});
+
+router.get("/:id/edit", (req: Request, res: Response) => {
+  res.render("pages/guard-edit", {
+    errors: {},
+    formData: {},
+    title: "Edit Guard",
   });
 });
 
