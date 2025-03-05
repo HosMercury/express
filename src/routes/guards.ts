@@ -9,6 +9,16 @@ router.get("/", (req: Request, res: Response) => {
   res.render("pages/guard-index", { title: "Guards" });
 });
 
+router.get("/add", (req: Request, res: Response) => {
+  console.log("Rendering guard-add.ejs");
+
+  res.render("pages/guard-add", {
+    errors: {},
+    formData: {},
+    title: "Add Guard",
+  });
+});
+
 router.get("/:id", async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
@@ -33,22 +43,6 @@ router.get("/:id", async (req: Request, res: Response) => {
     console.error("🔥 Error fetching guard:", error);
     res.status(500).render("pages/error", { message: "Internal Server Error" });
   }
-});
-
-router.get("/add", (req: Request, res: Response) => {
-  res.render("pages/guard-add", {
-    errors: {},
-    formData: {},
-    title: "Add Guard",
-  });
-});
-
-router.get("/:id/edit", (req: Request, res: Response) => {
-  res.render("pages/guard-edit", {
-    errors: {},
-    formData: {},
-    title: "Edit Guard",
-  });
 });
 
 // Zod Schema for Validation
@@ -90,6 +84,34 @@ router.post("/add", async (req: Request, res: Response) => {
   } catch (error) {
     console.error("❌ Database Insert Error:", error);
     res.status(500).send("Internal Server Error");
+  }
+});
+
+router.get("/:id/edit", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    // Fetch the guard by ID
+    const result = await pool.query("SELECT * FROM guards WHERE id = $1", [id]);
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .render("pages/404", { message: "Guard not found" });
+    }
+
+    const guard = result.rows[0];
+
+    // Render the edit page with guard data
+    res.render("pages/guard-edit", {
+      title: `Edit Guard: ${guard.name}`,
+      guard,
+      errors: {},
+      formData: {}, // Empty formData for initial rendering
+    });
+  } catch (error) {
+    console.error("🔥 Error fetching guard:", error);
+    res.status(500).render("pages/error", { message: "Internal Server Error" });
   }
 });
 

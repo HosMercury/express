@@ -17,6 +17,14 @@ const router = (0, express_1.Router)();
 router.get("/", (req, res) => {
     res.render("pages/guard-index", { title: "Guards" });
 });
+router.get("/add", (req, res) => {
+    console.log("Rendering guard-add.ejs");
+    res.render("pages/guard-add", {
+        errors: {},
+        formData: {},
+        title: "Add Guard",
+    });
+});
 router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
@@ -39,20 +47,6 @@ router.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(500).render("pages/error", { message: "Internal Server Error" });
     }
 }));
-router.get("/add", (req, res) => {
-    res.render("pages/guard-add", {
-        errors: {},
-        formData: {},
-        title: "Add Guard",
-    });
-});
-router.get("/:id/edit", (req, res) => {
-    res.render("pages/guard-edit", {
-        errors: {},
-        formData: {},
-        title: "Edit Guard",
-    });
-});
 // Zod Schema for Validation
 const guardSchema = zod_1.z.object({
     name: zod_1.z.string().min(3, "Name must be at least 3 characters"),
@@ -85,6 +79,30 @@ router.post("/add", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     catch (error) {
         console.error("❌ Database Insert Error:", error);
         res.status(500).send("Internal Server Error");
+    }
+}));
+router.get("/:id/edit", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        // Fetch the guard by ID
+        const result = yield pool_1.pool.query("SELECT * FROM guards WHERE id = $1", [id]);
+        if (result.rows.length === 0) {
+            return res
+                .status(404)
+                .render("pages/404", { message: "Guard not found" });
+        }
+        const guard = result.rows[0];
+        // Render the edit page with guard data
+        res.render("pages/guard-edit", {
+            title: `Edit Guard: ${guard.name}`,
+            guard,
+            errors: {},
+            formData: {}, // Empty formData for initial rendering
+        });
+    }
+    catch (error) {
+        console.error("🔥 Error fetching guard:", error);
+        res.status(500).render("pages/error", { message: "Internal Server Error" });
     }
 }));
 exports.default = router;
