@@ -22,6 +22,7 @@ const guards_1 = __importDefault(require("./src/routes/guards"));
 const guards_2 = __importDefault(require("./src/routes/api/guards"));
 const connect_pg_simple_1 = __importDefault(require("connect-pg-simple"));
 const auth_2 = __importDefault(require("./src/middlewares/auth"));
+const connect_flash_1 = __importDefault(require("connect-flash"));
 dotenv_1.default.config();
 const PORT = 8000;
 const app = (0, express_1.default)();
@@ -49,6 +50,14 @@ app.use((0, express_session_1.default)({
         sameSite: "strict", // Protect against CSRF attacks
     },
 }));
+// 🔹 Add `connect-flash` middleware **after session**
+app.use((0, connect_flash_1.default)());
+// 🔹 Middleware to pass flash messages to all views
+app.use((req, res, next) => {
+    res.locals.successMessage = req.flash("success");
+    res.locals.errorMessage = req.flash("error");
+    next();
+});
 // Serve static files (CSS, JS, images)
 app.use(express_1.default.static("public"));
 // Check database connection

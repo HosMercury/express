@@ -14,3 +14,15 @@
     <%= title %>
     </h1>
     <div class="min-h-screen px-4 md:px-56">
+
+    <% if (successMessage.length) { %>
+      <div class="bg-green-500 text-white p-3 rounded-md my-2">
+        <%= successMessage %>
+      </div>
+    <% } %>
+
+    <% if (errorMessage.length) { %>
+      <div class="bg-red-500 text-white p-3 rounded-md mb-4">
+        <%= errorMessage %>
+      </div>
+    <% } %>

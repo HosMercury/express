@@ -115,4 +115,106 @@ router.get("/:id/edit", async (req: Request, res: Response) => {
   }
 });
 
+router.post("/:id/edit", async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const formData = {
+    name: req.body.name,
+    title: req.body.title,
+    experience: Number(req.body.experience),
+  };
+
+  // Validate form data using Zod
+  const result = guardSchema.safeParse(formData);
+
+  if (!result.success) {
+    const errors = result.error.format();
+
+    // Fetch the guard again to keep the existing data
+    const guardResult = await pool.query("SELECT * FROM guards WHERE id = $1", [
+      id,
+    ]);
+
+    if (guardResult.rows.length === 0) {
+      return res
+        .status(404)
+        .render("pages/404", { message: "Guard not found" });
+    }
+
+    const guard = guardResult.rows[0];
+
+    return res.render("pages/guard-edit", {
+      title: `Edit Guard: ${guard.name}`,
+      guard,
+      errors,
+      formData,
+    });
+  }
+
+  try {
+    // Update guard in the database
+    const updatedGuard = await pool.query(
+      "UPDATE guards SET name = $1, title = $2, experience = $3 WHERE id = $4 RETURNING *",
+      [formData.name, formData.title, formData.experience, id]
+    );
+
+    if (updatedGuard.rowCount === 0) {
+      return res
+        .status(404)
+        .render("pages/404", { message: "Guard not found" });
+    }
+
+    req.flash("success", "Guard updated successfully!");
+    return res.redirect(`/guards/${id}`);
+  } catch (error) {
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.post("/:id/delete", async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      "DELETE FROM guards WHERE id = $1 RETURNING *",
+      [id]
+    );
+
+    if (result.rowCount === 0) {
+      return res
+        .status(404)
+        .render("pages/404", { message: "Guard not found" });
+    }
+
+    req.flash("success", "Guard deleted successfully!");
+    return res.redirect("/guards");
+  } catch (error) {
+    console.error("🔥 Error deleting guard:", error);
+    res.status(500).render("pages/error", { message: "Internal Server Error" });
+  }
+});
+
+router.post("/:id/delete", async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      "DELETE FROM guards WHERE id = $1 RETURNING *",
+      [id]
+    );
+
+    if (result.rowCount === 0) {
+      return res
+        .status(404)
+        .render("pages/404", { message: "Guard not found" });
+    }
+
+    req.flash("success", "Guard deleted successfully!");
+    return res.redirect("/guards");
+  } catch (error) {
+    console.error("🔥 Error deleting guard:", error);
+    res.status(500).render("pages/error", { message: "Internal Server Error" });
+  }
+});
+
 export default router;

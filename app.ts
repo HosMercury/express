@@ -8,6 +8,7 @@ import guardsRouter from "./src/routes/guards";
 import guardsApi from "./src/routes/api/guards";
 import pgSession from "connect-pg-simple";
 import requireAuth from "./src/middlewares/auth";
+import flash from "connect-flash";
 
 dotenv.config();
 
@@ -43,6 +44,16 @@ app.use(
     },
   })
 );
+
+// 🔹 Add `connect-flash` middleware **after session**
+app.use(flash());
+
+// 🔹 Middleware to pass flash messages to all views
+app.use((req, res, next) => {
+  res.locals.successMessage = req.flash("success");
+  res.locals.errorMessage = req.flash("error");
+  next();
+});
 
 // Serve static files (CSS, JS, images)
 app.use(express.static("public"));
