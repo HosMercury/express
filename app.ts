@@ -12,7 +12,7 @@ import flash from "connect-flash";
 
 dotenv.config();
 
-const PORT = 8000;
+const PORT = 3000;
 const app: Express = express();
 const PgStore = pgSession(session);
 
