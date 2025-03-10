@@ -27,6 +27,7 @@ app.use(express.json()); // Parses JSON request bodies
 app.use(express.urlencoded({ extended: true })); // Parses URL-encoded request bodies
 
 // Middleware: Express Session with PostgreSQL Store
+app.set("trust proxy", 1);
 app.use(
   session({
     store: new PgStore({
