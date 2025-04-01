@@ -24,7 +24,7 @@ const connect_pg_simple_1 = __importDefault(require("connect-pg-simple"));
 const auth_2 = __importDefault(require("./src/middlewares/auth"));
 const connect_flash_1 = __importDefault(require("connect-flash"));
 dotenv_1.default.config();
-const PORT = 8000;
+const PORT = process.env.PORT || 3000;
 const app = (0, express_1.default)();
 const PgStore = (0, connect_pg_simple_1.default)(express_session_1.default);
 // Correctly set views directory
@@ -35,6 +35,7 @@ app.set("views", viewsPath);
 app.use(express_1.default.json()); // Parses JSON request bodies
 app.use(express_1.default.urlencoded({ extended: true })); // Parses URL-encoded request bodies
 // Middleware: Express Session with PostgreSQL Store
+app.set("trust proxy", 1);
 app.use((0, express_session_1.default)({
     store: new PgStore({
         pool: pool_1.pool, // Use your database connection pool

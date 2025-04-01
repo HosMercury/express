@@ -1,4 +1,4 @@
-const baseurl = "http://localhost:8000/api/";
+const baseurl = "http://localhost:3000/api/";
 
 // format dates by class
 document.addEventListener("DOMContentLoaded", function () {
